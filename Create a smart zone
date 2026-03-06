@@ -1,0 +1,67 @@
+import os
+import time
+import serial # import serial pacakge
+import sys # import system package
+import yagmail
+import pyttsx3
+arduino = serial.Serial('COM5', 9600, timeout=.1)
+time.sleep(2)
+count = 0
+def mail_send(data,sub):
+ print("Sending mail...")
+ mail = 'sampletestmail.786@gmail.com';
+ password = 'vnzymrxlzmdyurch'
+ # list of email_id to send the mail
+ li = ["sskishore994@gmail.com"]
+ yag = yagmail.SMTP(mail, password)
+ for dest in li:
+ yag.send(
+ to="sskishore994@gmail.com",
+ subject=sub,
+ contents=data,
+print("Mail sent to all...!")
+while True:
+ data = arduino.readline()[:-2] # the last bit gets rid of the new-line chars
+ if data:
+ data = data.decode('utf-8')
+ data_v = str(data)
+ data_v = data_v.split(' ')
+ print(data_v)
+ data1 = data_v[0]
+ data1i = data_v[0]
+ print(data1i)
+ print('Tag Number: ', data1)
+ if data1i =="1":
+ print("School Zone Detection")
+ engine = pyttsx3.init()
+ engine.say("Hi... School Zone Detected - Take Care...!")
+ engine.runAndWait()
+ data = "School Zone Detected...!"
+ sub = "Zone: SCHOOL"
+ if count == "0":
+ mail_send(data, sub)
+ count = count + 1
+elif data1i == "2":
+ print("Accident Zone Detection")
+ engine = pyttsx3.init()
+ engine.say("Hi... Accident Zone Detected - Take Care...!")
+ engine.runAndWait()
+ data = "Accident Zone Detected...!"
+ sub = "Zone: ACCIDENT"
+ if count == 0:
+ mail_send(data, sub)
+ count = count + 1
+ elif data1i == "3":
+ print("Hospital Zone Detection")
+ engine = pyttsx3.init()
+ engine.say("Hi... Hospital Zone Detected - Take Care...!")
+ engine.runAndWait()
+ data = "Hospital Zone Detected...!"
+ sub = "Zone: HOSPITAL"
+ if count == 0:
+ mail_send(data, sub)
+ count = count + 1
+ else:
+ print("NORMAL")
+ count = 0
+ print(' ')
